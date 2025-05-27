@@ -72,41 +72,48 @@
   </div>
 
 <script>
-  // Load existing comments from local storage on page load
   window.onload = function () {
     const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
     const commentsList = document.getElementById('commentsList');
 
-    savedComments.forEach(function (text) {
-      const comment = document.createElement('div');
-      comment.classList.add('comment');
-      comment.textContent = text;
-      commentsList.appendChild(comment);
+    savedComments.forEach(function (item) {
+      const commentBox = document.createElement('div');
+      commentBox.classList.add('comment');
+      commentBox.innerHTML = `<strong>${item.nickname}</strong> (${item.time})<br>${item.text}`;
+      commentsList.appendChild(commentBox);
     });
   };
 
   function addComment() {
     const commentInput = document.getElementById('commentInput');
+    const nicknameInput = document.getElementById('nicknameInput');
     const commentsList = document.getElementById('commentsList');
 
-    if (commentInput.value.trim() === '') {
-      alert('Please write a comment before submitting.');
+    if (commentInput.value.trim() === '' || nicknameInput.value.trim() === '') {
+      alert('닉네임과 댓글을 모두 입력해 주세요.');
       return;
     }
 
-    // Add to screen
-    const newComment = document.createElement('div');
-    newComment.classList.add('comment');
-    newComment.textContent = commentInput.value;
-    commentsList.appendChild(newComment);
+    const now = new Date();
+    const timeString = now.toLocaleString('ko-KR');  // e.g., 2025. 5. 28. 오후 3:45:12
 
-    // Save to local storage
+    const newComment = {
+      text: commentInput.value,
+      nickname: nicknameInput.value,
+      time: timeString
+    };
+
     const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
-    savedComments.push(commentInput.value);
+    savedComments.push(newComment);
     localStorage.setItem('comments', JSON.stringify(savedComments));
 
-    // Clear the input field
+    const commentBox = document.createElement('div');
+    commentBox.classList.add('comment');
+    commentBox.innerHTML = `<strong>${newComment.nickname}</strong> (${newComment.time})<br>${newComment.text}`;
+    commentsList.appendChild(commentBox);
+
     commentInput.value = '';
+    nicknameInput.value = '';
   }
 </script>
 </body>
