@@ -71,27 +71,43 @@
     </div>
   </div>
 
-  <script>
-    function addComment() {
-      const commentInput = document.getElementById('commentInput');
-      const commentsList = document.getElementById('commentsList');
+<script>
+  // Load existing comments from local storage on page load
+  window.onload = function () {
+    const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
+    const commentsList = document.getElementById('commentsList');
 
-      if (commentInput.value.trim() === '') {
-        alert('Please write a comment before submitting.');
-        return;
-      }
+    savedComments.forEach(function (text) {
+      const comment = document.createElement('div');
+      comment.classList.add('comment');
+      comment.textContent = text;
+      commentsList.appendChild(comment);
+    });
+  };
 
-      // Create a new comment element
-      const newComment = document.createElement('div');
-      newComment.classList.add('comment');
-      newComment.textContent = commentInput.value;
+  function addComment() {
+    const commentInput = document.getElementById('commentInput');
+    const commentsList = document.getElementById('commentsList');
 
-      // Add the new comment to the comments list
-      commentsList.appendChild(newComment);
-
-      // Clear the input field
-      commentInput.value = '';
+    if (commentInput.value.trim() === '') {
+      alert('Please write a comment before submitting.');
+      return;
     }
-  </script>
+
+    // Add to screen
+    const newComment = document.createElement('div');
+    newComment.classList.add('comment');
+    newComment.textContent = commentInput.value;
+    commentsList.appendChild(newComment);
+
+    // Save to local storage
+    const savedComments = JSON.parse(localStorage.getItem('comments')) || [];
+    savedComments.push(commentInput.value);
+    localStorage.setItem('comments', JSON.stringify(savedComments));
+
+    // Clear the input field
+    commentInput.value = '';
+  }
+</script>
 </body>
 </html>
